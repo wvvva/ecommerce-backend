@@ -25,7 +25,7 @@ public class ChectoutController {
 
     @PostMapping("/checkout")    
     public String checkout(@RequestParam("userId") Long userId) throws StripeException{
-        Stripe.apiKey = "sk_test_51R5pQfRFfrJmeZvqFmul4J1H89TML8mTPzweEeN8MDAbxelrKIVSGYZcOCFFQVUEOsduBnp5pOrKAIju6HuYy406001TE3WkWZ";
+        Stripe.apiKey = "STRIPE_API";
         String YOUR_DOMAIN = "http://localhost:4242";
 
         User user = userRepository.findById(userId)
