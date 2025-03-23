@@ -31,6 +31,8 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	implementation 'com.stripe:stripe-java:28.0.0'
+	implementation 'com.sparkjava:spark-core:2.9.3'
 }
 
 tasks.named('test') {

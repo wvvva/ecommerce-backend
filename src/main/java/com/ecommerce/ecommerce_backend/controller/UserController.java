@@ -1,9 +1,8 @@
 package com.ecommerce.ecommerce_backend.controller;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +16,6 @@ import com.ecommerce.ecommerce_backend.entity.Item;
 import com.ecommerce.ecommerce_backend.entity.User;
 import com.ecommerce.ecommerce_backend.repository.ItemRepository;
 import com.ecommerce.ecommerce_backend.repository.UserRepository;
-
-
 
 @RestController
 @RequestMapping("/api")
@@ -84,10 +81,32 @@ public class UserController {
         return existingUser.get();
     }
 
-    @GetMapping("/getItems")    
-    public List<Item> getItems(@RequestParam("userId") Long userId){
-        User existingUser = userRepository.findById(userId).get();
-        return existingUser.getItemList();
+    @PostMapping("/users/removeItem")
+    public User removeItem(@RequestParam("userId") Long userId, @RequestParam("itemId") Long itemId) {
+        Optional<User> existingUser = userRepository.findById(userId);
+        if (!existingUser.isPresent()) {
+            return null; 
+        }
+        
+        List<Item> itemList = existingUser.get().getItemList();
+        Item item = itemRepository.findById(itemId).get();
+        item.setQuantityInCart(item.getQuantityInCart() - 1);
+        if (item.getQuantityInCart() == 0){
+            item.setUser(null);
+            itemList.remove(item);
+        }
+        existingUser.get().setItemList(itemList);
+        userRepository.save(existingUser.get());
+        itemRepository.save(item);
+        return existingUser.get();
     }
+
     
+    @PostMapping("/users/getItems")    
+    public List<Item> getItems(@RequestParam("userId") Long userId){
+        User existingUser = userRepository.findById(userId).orElse(null);
+        return existingUser != null ? existingUser.getItemList() : Collections.emptyList();
+
+    }
+
 }
